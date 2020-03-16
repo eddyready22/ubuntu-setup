@@ -1,0 +1,40 @@
+---
+- name: Perform upgrade
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: Enable universe and multiverse repos
+  apt_repository:
+    repo: "{{ item }}"
+  with_items:
+    - "deb http://lv.archive.ubuntu.com/ubuntu/ {{ ubuntu_codename }} universe"
+    - "deb http://lv.archive.ubuntu.com/ubuntu/ {{ ubuntu_codename }} multiverse"
+
+- name: Install essential libs
+  apt:
+    name:
+      - build-essential
+      - python
+      - python-pip
+      - snapd
+
+- name: Install various tools
+  apt:
+    name:
+      - jq
+      - httpie
+      - guake
+      - htop
+      - cifs-utils
+      - ufw
+      - ecryptfs-utils
+      - ncdu
+      - direnv
+      - curl
+      - wget
+      - expect
+
+- name: Install bat
+  apt:
+    deb: "https://github.com/sharkdp/bat/releases/download/v{{ bat_version }}/bat_{{ bat_version }}_amd64.deb"

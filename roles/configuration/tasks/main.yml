@@ -1,0 +1,17 @@
+---
+
+- name: Sudo without password
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { line: "#Password less sudo", regexp: '^#Password' }
+    - { line: "{{ user.name }} ALL=(ALL) NOPASSWD: ALL", regexp: '^{{ user.name }}' }
+
+- name: Create bin folder in user home
+  file:
+    path: "{{ user.home }}/bin"
+    state: directory
+  become: no

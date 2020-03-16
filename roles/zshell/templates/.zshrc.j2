@@ -1,0 +1,102 @@
+# =====================================================================================================================
+# General zsh settings
+# =====================================================================================================================
+
+# Disable control flow (ctrl-s / ctrl-q)
+stty stop '' -ixoff -ixon
+
+# Set spelling correction
+setopt correct
+
+# Dont raise errors when regex nomatch fires
+unsetopt nomatch
+
+# =====================================================================================================================
+# Exports
+# =====================================================================================================================
+# Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='nvim'
+fi
+
+# Add bin to path
+export PATH="$PATH:$HOME/bin"
+
+# Direnv integration¬
+eval "$(direnv hook zsh)"
+
+# Base16 Shell
+BASE16_SHELL="$HOME/.config/base16-shell/"
+[ -n "$PS1" ] && \
+    [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
+        eval "$("$BASE16_SHELL/profile_helper.sh")"
+
+# =====================================================================================================================
+# Oh my zsh settings
+# =====================================================================================================================
+# Path to your oh-my-zsh installation.
+export ZSH=$HOME/.oh-my-zsh
+
+# Theme declaration
+ZSH_THEME="pure"
+
+# Disable marking repo as dirty due to untracked files
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# =====================================================================================================================
+# Plugins
+# =====================================================================================================================
+# OS
+plugins=(sudo)
+
+# TERMINAL
+plugins+=(zsh-syntax-highlighting zsh-autosuggestions zsh-completions)
+
+# VM
+plugins+=(docker kubectl kops aws)
+
+# DEV
+plugins+=(git gradle zsh-nvm npm yarn gem rbenv pyenv)
+
+# =====================================================================================================================
+# Sourcing
+# =====================================================================================================================
+# Oh-my-zsh
+source $ZSH/oh-my-zsh.sh
+source $ZSH/custom/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+# =====================================================================================================================
+# Plugin bindings
+# =====================================================================================================================
+# History substring search plugin binding
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# Autosuggestions + Substring search config
+ZSH_AUTOSUGGEST_CLEAR_WIDGETS=("${(@)ZSH_AUTOSUGGEST_CLEAR_WIDGETS:#(up|down)-line-or-history}")
+ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(history-substring-search-up history-substring-search-down)
+
+# =====================================================================================================================
+# Additional aliases
+# =====================================================================================================================
+alias vim='nvim'
+alias gbd='git push origin --delete $(git_current_branch)'
+alias gcleanup=$'git fetch -p && git branch -v | grep \'gone\' | awk \'{print $1}\' | xargs -n 1 git branch -D'
+alias dockerstopall='docker stop $(docker ps -a -q)'
+alias dockerrmall='docker rm $(docker ps -a -q)'
+alias cat='bat'
+alias ping='prettyping --nolegend'
+alias help='tldr'
+alias q='exit'
+alias fsize='ncdu --color dark -x --exclude .git --exclude node_modules'
+alias lg='lazygit'
+alias ld='lazydocker'
+
+# =====================================================================================================================
+# SDKMAN
+# =====================================================================================================================
+# THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
